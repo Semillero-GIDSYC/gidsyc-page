@@ -35,7 +35,7 @@ export const COURSES: Course[] = [
     name: 'Fundamentos de Transformers',
     category: 'Deep Learning',
     desc: 'Exploración profunda de los mecanismos de atención en redes neuronales, desde RNNs hasta Transformers modernos.',
-    url: 'https://github.com/gidsyc',
+    url: 'https://github.com/sanchezgt/fundamentos-de-los-transformers',
     duration: '3 h 45 min',
     level: 'Intermedio',
     lessons: '10 lecciones',
