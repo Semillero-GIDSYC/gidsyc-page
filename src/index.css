@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  
+  --color-navy-50: #f8fafc;
+  --color-navy-100: #f1f5f9;
+  --color-navy-200: #e2e8f0;
+  --color-navy-300: #cbd5e1;
+  --color-navy-400: #94a3b8;
+  --color-navy-500: #64748b;
+  --color-navy-600: #475569;
+  --color-navy-700: #334155;
+  --color-navy-800: #1e293b;
+  --color-navy-900: #0f172a;
+  
+  --color-burnt-red-500: #64748b; /* Using a more professional slate-blue gray */
+  --color-burnt-red-600: #475569;
+  
+  --color-accent: #3b82f6; /* Modern Blue */
+}
+
+@layer base {
+  body {
+    @apply bg-white text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+}
+
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] rounded-3xl;
+}
+
+.nav-link {
+  @apply text-sm font-medium text-slate-500 hover:text-navy-900 transition-all duration-300 relative py-2 px-1;
+}
+
+.nav-link::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-0.5 bg-navy-900 transition-all duration-300 rounded-full;
+}
+
+.nav-link:hover::after {
+  @apply w-full;
+}
+
+.active-nav-link {
+  @apply text-navy-900 font-semibold;
+}
+
+.active-nav-link::after {
+  @apply w-full;
+}
+
+.card-hover {
+  @apply transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-200;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s infinite ease-in-out;
+}
+
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
+.animate-pulse-gentle {
+  animation: pulse-gentle 4s infinite ease-in-out;
+}
+
+@keyframes scale-dot {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  50% { transform: scale(1.5); box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+}
+
+.status-dot {
+  @apply relative flex h-2 w-2;
+}
+
+.status-dot-ring {
+  @apply absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75;
+}
+
+.status-dot-inner {
+  @apply relative inline-flex h-2 w-2 rounded-full bg-green-500;
+}
