@@ -33,18 +33,30 @@ export const Home = ({ onNavClick }: HomeProps) => {
               Grupo de Investigación y Desarrollo en Sistemas y Computación
             </p>
 
-            <div className="mt-16 flex flex-col md:flex-row items-center justify-center gap-6 pointer-events-auto">
-              <button 
-                onClick={() => onNavClick('main', '#proyectos')} 
-                className="w-full md:w-auto px-10 py-4 bg-gray-600 text-white font-bold rounded-full hover:bg-gray-800 transition-all transform hover:-translate-y-1 active:scale-95 shadow-xl shadow-gray-200 text-center"
+            <div className="mt-16 flex flex-col md:flex-row items-stretch md:items-center justify-center gap-4 md:gap-6 pointer-events-auto max-w-6xl mx-auto px-4">
+              <button
+                onClick={() => onNavClick('main', '#proyectos')}
+                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
               >
                 Ver Proyectos
               </button>
-              <button 
-                onClick={() => onNavClick('main', '#equipo')} 
-                className="w-full md:w-auto px-10 py-4 border border-gray-200 bg-white/50 backdrop-blur-md font-bold rounded-full hover:bg-gray-50 text-gray-700 transition-all transform hover:-translate-y-1 active:scale-95 text-center"
+              <button
+                onClick={() => onNavClick('estudiantes')}
+                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
+              >
+                Semilleristas
+              </button>
+              <button
+                onClick={() => onNavClick('main', '#equipo')}
+                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
               >
                 Nuestro Equipo
+              </button>
+              <button
+                onClick={() => onNavClick('cursos')}
+                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
+              >
+                Cursos
               </button>
             </div>
           </motion.div>
@@ -221,9 +233,9 @@ export const Home = ({ onNavClick }: HomeProps) => {
                 </p>
               </div>
               <div className="flex flex-col items-center lg:items-end gap-6 shrink-0">
-                <a 
-                  href="https://chat.whatsapp.com/CCeprVBKvg71rPoFp2NqLp" 
-                  target="_blank" 
+                <a
+                  href="https://chat.whatsapp.com/CCeprVBKvg71rPoFp2NqLp"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-4 bg-white text-navy-900 font-bold px-8 py-5 rounded-2xl transition-all transform hover:-translate-y-1 hover:shadow-xl active:scale-95 group"
                 >
