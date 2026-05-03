@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Search, Users, BookOpen, ChevronRight, Phone, MapPin, Mail } from 'lucide-react';
-import { NeuralNetworkBackground } from '../features/hero/NeuralNetworkBackground';
+import { BrainBackground } from '../features/hero/BrainBackground/BrainBackground';
 import { PROJECTS } from '../data/projects';
 import { TEAM_MEMBERS } from '../data/team';
 import FULL_LOGO from '/assets/horizontal.png';
@@ -14,7 +14,7 @@ export const Home = ({ onNavClick }: HomeProps) => {
     <main>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <NeuralNetworkBackground />
+        <BrainBackground />
         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-white/10 via-transparent to-white pointer-events-none"></div>
 
         <div className="relative z-10 text-center px-4 max-w-4xl pointer-events-none">
@@ -213,7 +213,7 @@ export const Home = ({ onNavClick }: HomeProps) => {
       {/* Contact CTA */}
       <section className="py-20 bg-slate-50 overflow-hidden relative" id="contacto">
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-          <NeuralNetworkBackground />
+          <BrainBackground />
         </div>
         <div className="relative z-10 max-w-6xl mx-auto px-4">
           <div className="bg-navy-900 rounded-[2.5rem] p-8 md:p-12 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] border border-white/5 relative overflow-hidden group">
