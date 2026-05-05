@@ -55,7 +55,7 @@ export function schedulePulse({
   slot,
   startTime,
   nodeDelay = 0.085,
-  maxDepth = 15,
+  maxDepth = 9,
 }: PulseScheduleOptions, schedule: PulseScheduleData): void {
   const nodePulseTimes = schedule.nodePulseTimes[slot];
   const edgePulseStarts = schedule.edgePulseStarts[slot];
