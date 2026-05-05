@@ -12,27 +12,24 @@ import type { BrainGeometryData } from './useBrainGeometry';
 
 interface BrainSceneProps {
   deviceTier: DeviceTier;
-  onReady?: () => void;
 }
 
-export default function BrainScene({ deviceTier, onReady }: BrainSceneProps) {
-  const brainData = useBrainGeometry(deviceTier.tier);
+export default function BrainScene({ deviceTier }: BrainSceneProps) {
+  const brainData = useBrainGeometry(deviceTier.particleCount, deviceTier.edgeK);
 
   if (!brainData) {
     return null;
   }
 
-  return <BrainSceneContent brainData={brainData} onReady={onReady} />;
+  return <BrainSceneContent brainData={brainData} />;
 }
 
 interface BrainSceneContentProps {
   brainData: BrainGeometryData;
-  onReady?: () => void;
 }
 
-function BrainSceneContent({ brainData, onReady }: BrainSceneContentProps) {
+function BrainSceneContent({ brainData }: BrainSceneContentProps) {
   const groupRef = useRef<THREE.Group>(null);
-  const readinessRef = useRef({ frameCount: 0, startTime: null as number | null, ready: false });
   const pulseSystem = usePulseSystem(brainData);
   const { triggerPulse, triggerPulseAt } = pulseSystem;
   const viewport = useThree((state) => state.viewport);
@@ -46,17 +43,6 @@ function BrainSceneContent({ brainData, onReady }: BrainSceneContentProps) {
     if (groupRef.current) {
       groupRef.current.rotation.y = frame.angleY + Math.sin(state.clock.elapsedTime * 0.42) * 0.06;
       groupRef.current.rotation.x = frame.angleX + Math.sin(state.clock.elapsedTime * 0.48) * 0.035;
-    }
-
-    const readiness = readinessRef.current;
-    if (!readiness.ready) {
-      readiness.startTime ??= state.clock.elapsedTime;
-      readiness.frameCount += 1;
-
-      if (readiness.frameCount >= 36 && state.clock.elapsedTime - readiness.startTime >= 0.65) {
-        readiness.ready = true;
-        onReady?.();
-      }
     }
   });
 

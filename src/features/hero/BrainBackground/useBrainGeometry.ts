@@ -1,56 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import highGeometryUrl from './generated/brain-high.bin?url';
-import lowGeometryUrl from './generated/brain-low.bin?url';
-import mediumGeometryUrl from './generated/brain-medium.bin?url';
+import { loadBrainPointCloud } from './brainPointCloudLoader';
 import {
-  createBrainGeometryData,
-  parseBrainGeometryAsset,
-  type BrainGeometryData,
-} from './brainGeometryAsset';
-import type { DeviceTier } from './useDeviceTier';
+  addInnerPointLayer,
+  computeBrainConnections,
+  computePointCloudNormals,
+  createPhases,
+  samplePointCloud,
+} from './brainPointCloudProcessing';
+import { buildEdgeIndexMap } from './brainPulseScheduler';
 
-export type { BrainGeometryData } from './brainGeometryAsset';
-
-const geometryUrls: Record<DeviceTier['tier'], string> = {
-  high: highGeometryUrl,
-  medium: mediumGeometryUrl,
-  low: lowGeometryUrl,
-};
-
-const geometryPromises = new Map<DeviceTier['tier'], Promise<BrainGeometryData>>();
-
-function loadPrecomputedBrainGeometry(tier: DeviceTier['tier']): Promise<BrainGeometryData> {
-  const existing = geometryPromises.get(tier);
-  if (existing) {
-    return existing;
-  }
-
-  const promise = fetch(geometryUrls[tier])
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Unable to load ${tier} brain geometry: ${response.status}`);
-      }
-      return response.arrayBuffer();
-    })
-    .then(parseBrainGeometryAsset)
-    .then(createBrainGeometryData);
-
-  geometryPromises.set(tier, promise);
-  return promise;
+export interface BrainGeometryData {
+  positions: Float32Array;
+  phases: Float32Array;
+  normals: Float32Array;
+  edges: Uint16Array;
+  edgeCount: number;
+  particleCount: number;
+  adjacency: number[][];
+  edgeIndexByPair: Map<number, number>;
 }
 
-export function useBrainGeometry(tier: DeviceTier['tier']): BrainGeometryData | null {
-  const [brainData, setBrainData] = useState<BrainGeometryData | null>(null);
+export function useBrainGeometry(particleCount: number, edgeK: number): BrainGeometryData | null {
+  const [sourcePointCloud, setSourcePointCloud] = useState<Float32Array | null>(null);
 
   useEffect(() => {
     let mounted = true;
-    setBrainData(null);
 
-    loadPrecomputedBrainGeometry(tier)
-      .then((geometry) => {
+    loadBrainPointCloud()
+      .then((pointCloud) => {
         if (mounted) {
-          setBrainData(geometry);
+          setSourcePointCloud(pointCloud);
         }
       })
       .catch((error) => {
@@ -60,7 +40,23 @@ export function useBrainGeometry(tier: DeviceTier['tier']): BrainGeometryData | 
     return () => {
       mounted = false;
     };
-  }, [tier]);
+  }, []);
 
-  return brainData;
+  return useMemo(() => {
+    if (!sourcePointCloud) {
+      return null;
+    }
+
+    const surfacePositions = samplePointCloud(sourcePointCloud, particleCount);
+    const surfaceCount = surfacePositions.length / 3;
+    const surfaceNormals = computePointCloudNormals(surfacePositions, surfaceCount, 16);
+    const positions = addInnerPointLayer(surfacePositions, surfaceNormals, 0.15);
+    const count = positions.length / 3;
+    const phases = createPhases(positions, count);
+    const normals = computePointCloudNormals(positions, count, 16);
+    const { edges, edgeCount, adjacency } = computeBrainConnections(positions, count, edgeK, 6);
+    const edgeIndexByPair = buildEdgeIndexMap(edges, count);
+
+    return { positions, phases, normals, edges, edgeCount, particleCount: count, adjacency, edgeIndexByPair };
+  }, [sourcePointCloud, particleCount, edgeK]);
 }
