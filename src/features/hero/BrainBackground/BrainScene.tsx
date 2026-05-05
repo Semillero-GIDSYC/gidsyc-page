@@ -44,8 +44,8 @@ function BrainSceneContent({ brainData, onReady }: BrainSceneContentProps) {
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = frame.angleY + Math.sin(state.clock.elapsedTime * 0.42) * 0.06;
-      groupRef.current.rotation.x = frame.angleX + Math.sin(state.clock.elapsedTime * 0.48) * 0.035;
+      groupRef.current.rotation.y = frame.angleY + Math.sin(state.clock.elapsedTime * 3.1) * 0.085;
+      groupRef.current.rotation.x = frame.angleX + Math.sin(state.clock.elapsedTime * 3.6) * 0.05;
     }
 
     const readiness = readinessRef.current;
