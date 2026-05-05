@@ -26,7 +26,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     url: 'https://scholar.google.com/citations?user=OD6w2l8AAAAJ&hl=es'
   },
   {
-    name: 'MSC. Jesús Ríos Pérez',
+    name: 'MSc. Jesús Ríos Pérez',
     role: 'Investigador',
     field: 'Investigador Senior',
     url: 'https://scholar.google.com/citations?user=0Gv4kvgAAAAJ&hl=es'
