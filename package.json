@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "extract:brain": "tsx scripts/extract-brain-points.ts"
+    "extract:brain": "tsx scripts/extract-brain-points.ts",
+    "build:brain": "tsx scripts/build-brain-assets.ts"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

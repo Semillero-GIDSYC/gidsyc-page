@@ -15,6 +15,7 @@ export function BrainParticles({ brainData, pulseSystem, onPointerDown }: BrainP
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const lastPulseVersionRef = useRef(-1);
+  const introStartRef = useRef<number | null>(null);
 
   const uniforms = useMemo(
     () => ({
@@ -26,13 +27,20 @@ export function BrainParticles({ brainData, pulseSystem, onPointerDown }: BrainP
       uMaxDepth: { value: 3.5 },
       uNormalAmplitude: { value: 0.006 },
       uPulseDuration: { value: 0.7 },
+      uIntroOpacity: { value: 0 },
     }),
     []
   );
 
   useFrame((state) => {
     if (materialRef.current) {
+      if (introStartRef.current === null) {
+        introStartRef.current = state.clock.elapsedTime;
+      }
+      const introElapsed = state.clock.elapsedTime - introStartRef.current;
+      const introOpacity = Math.min(Math.max((introElapsed - 0.12) / 0.28, 0), 1);
       materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+      materialRef.current.uniforms.uIntroOpacity.value = introOpacity;
     }
 
     if (pointsRef.current && lastPulseVersionRef.current !== pulseSystem.versionRef.current) {

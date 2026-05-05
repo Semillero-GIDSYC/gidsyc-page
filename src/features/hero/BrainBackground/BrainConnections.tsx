@@ -14,6 +14,7 @@ export function BrainConnections({ brainData, pulseSystem }: BrainConnectionsPro
   const linesRef = useRef<THREE.LineSegments>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const lastPulseVersionRef = useRef(-1);
+  const introStartRef = useRef<number | null>(null);
 
   const uniforms = useMemo(
     () => ({
@@ -24,13 +25,20 @@ export function BrainConnections({ brainData, pulseSystem }: BrainConnectionsPro
       uNormalAmplitude: { value: 0.006 },
       uPulseTravelDuration: { value: 0.46 },
       uPulseWidth: { value: 0.13 },
+      uIntroOpacity: { value: 0 },
     }),
     []
   );
 
   useFrame((state) => {
     if (materialRef.current) {
+      if (introStartRef.current === null) {
+        introStartRef.current = state.clock.elapsedTime;
+      }
+      const introElapsed = state.clock.elapsedTime - introStartRef.current;
+      const introOpacity = Math.min(Math.max((introElapsed - 0.12) / 0.28, 0), 1);
       materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
+      materialRef.current.uniforms.uIntroOpacity.value = introOpacity;
     }
 
     if (linesRef.current && lastPulseVersionRef.current !== pulseSystem.versionRef.current) {

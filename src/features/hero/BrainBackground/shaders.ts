@@ -50,6 +50,7 @@ export const particleFragment = /* glsl */ `
   uniform vec3 uBaseColor;
   uniform vec3 uPulseColor;
   uniform float uMaxDepth;
+  uniform float uIntroOpacity;
 
   varying float vPulse;
   varying float vBrightness;
@@ -65,7 +66,7 @@ export const particleFragment = /* glsl */ `
     vec3 color = mix(uBaseColor, uPulseColor, vPulse);
     
     float depthFade = clamp(1.0 - (vDepth / uMaxDepth) * 0.35, 0.35, 1.0);
-    float alpha = softEdge * vBrightness * depthFade * vBoundaryFade * 0.9;
+    float alpha = softEdge * vBrightness * depthFade * vBoundaryFade * 0.9 * uIntroOpacity;
 
     gl_FragColor = vec4(color, alpha);
   }
@@ -95,10 +96,10 @@ export const connectionVertex = /* glsl */ `
 
   float edgePulse(float pulseStart, float direction) {
     float t = (uTime - pulseStart) / uPulseTravelDuration;
-    float active = smoothstep(0.0, 0.08, t) * (1.0 - smoothstep(0.92, 1.15, t));
+    float pulseActivity = smoothstep(0.0, 0.08, t) * (1.0 - smoothstep(0.92, 1.15, t));
     float center = direction > 0.0 ? t : 1.0 - t;
     float distanceToWave = abs(aEdgeCoord - center);
-    return exp(-pow(distanceToWave / uPulseWidth, 2.0)) * active;
+    return exp(-pow(distanceToWave / uPulseWidth, 2.0)) * pulseActivity;
   }
 
   void main() {
@@ -121,6 +122,7 @@ export const connectionFragment = /* glsl */ `
   uniform vec3 uBaseColor;
   uniform vec3 uPulseColor;
   uniform float uMaxDepth;
+  uniform float uIntroOpacity;
 
   varying float vPulse;
   varying float vDepth;
@@ -131,7 +133,7 @@ export const connectionFragment = /* glsl */ `
     vec3 color = mix(uBaseColor, uPulseColor, vPulse);
     
     float intensity = smoothstep(0.0, 1.0, vPulse);
-    float alpha = mix(0.18, 0.86, intensity) * depthFade * vBoundaryFade;
+    float alpha = mix(0.18, 0.86, intensity) * depthFade * vBoundaryFade * uIntroOpacity;
 
     gl_FragColor = vec4(color, alpha);
   }
