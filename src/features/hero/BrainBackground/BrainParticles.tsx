@@ -3,26 +3,29 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { particleVertex, particleFragment } from './shaders';
 import type { BrainGeometryData } from './useBrainGeometry';
+import type { BrainPulseSystem } from './usePulseSystem';
 
 interface BrainParticlesProps {
   brainData: BrainGeometryData;
-  activations: Float32Array;
-  needsUpdate: { current: boolean };
+  pulseSystem: BrainPulseSystem;
   onPointerDown?: (e: any) => void;
 }
 
-export function BrainParticles({ brainData, activations, needsUpdate, onPointerDown }: BrainParticlesProps) {
+export function BrainParticles({ brainData, pulseSystem, onPointerDown }: BrainParticlesProps) {
   const pointsRef = useRef<THREE.Points>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const lastPulseVersionRef = useRef(-1);
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
-      uBaseColor: { value: new THREE.Color('#94a3b8') }, // Slate 400
-      uPulseColor: { value: new THREE.Color('#1e293b') }, // Navy / Dark Slate
-      uBaseSize: { value: 3.8 }, // Increased from 2.8 for better morphology definition
-      uMaxDepth: { value: 3.5 }
+      uBaseColor: { value: new THREE.Color('#334155') },
+      uPulseColor: { value: new THREE.Color('#0f172a') },
+      uBaseSize: { value: 5.2 },
+      uMaxDepth: { value: 3.5 },
+      uNormalAmplitude: { value: 0.006 },
+      uPulseDuration: { value: 0.7 },
     }),
     []
   );
@@ -32,10 +35,13 @@ export function BrainParticles({ brainData, activations, needsUpdate, onPointerD
       materialRef.current.uniforms.uTime.value = state.clock.elapsedTime;
     }
 
-    if (needsUpdate.current && pointsRef.current) {
+    if (pointsRef.current && lastPulseVersionRef.current !== pulseSystem.versionRef.current) {
       const geometry = pointsRef.current.geometry;
-      const attr = geometry.attributes.aActivation as THREE.BufferAttribute;
-      attr.needsUpdate = true;
+      for (let i = 0; i < 3; i++) {
+        const attr = geometry.attributes[`aPulseTime${i}`] as THREE.BufferAttribute;
+        attr.needsUpdate = true;
+      }
+      lastPulseVersionRef.current = pulseSystem.versionRef.current;
     }
   });
 
@@ -55,9 +61,27 @@ export function BrainParticles({ brainData, activations, needsUpdate, onPointerD
           itemSize={1}
         />
         <bufferAttribute
-          attach="attributes-aActivation"
+          attach="attributes-aNormal"
           count={brainData.particleCount}
-          array={activations}
+          array={brainData.normals}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-aPulseTime0"
+          count={brainData.particleCount}
+          array={pulseSystem.schedule.nodePulseTimes[0]}
+          itemSize={1}
+        />
+        <bufferAttribute
+          attach="attributes-aPulseTime1"
+          count={brainData.particleCount}
+          array={pulseSystem.schedule.nodePulseTimes[1]}
+          itemSize={1}
+        />
+        <bufferAttribute
+          attach="attributes-aPulseTime2"
+          count={brainData.particleCount}
+          array={pulseSystem.schedule.nodePulseTimes[2]}
           itemSize={1}
         />
       </bufferGeometry>

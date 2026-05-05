@@ -1,30 +1,48 @@
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 
 import { useBrainGeometry } from './useBrainGeometry';
 import { usePulseSystem } from './usePulseSystem';
 import { BrainParticles } from './BrainParticles';
 import { BrainConnections } from './BrainConnections';
-import { DeviceTier } from './useDeviceTier';
+import { computeBrainWorldFrame } from './brainFraming';
+import type { DeviceTier } from './useDeviceTier';
+import type { BrainGeometryData } from './useBrainGeometry';
 
 interface BrainSceneProps {
   deviceTier: DeviceTier;
 }
 
 export default function BrainScene({ deviceTier }: BrainSceneProps) {
-  const groupRef = useRef<THREE.Group>(null);
-  
-  // Data + State Hooks
   const brainData = useBrainGeometry(deviceTier.particleCount, deviceTier.edgeK);
-  const pulseSystem = usePulseSystem(brainData);
-  const { activations, stateRef: needsPulseUpdate, triggerPulseAt } = pulseSystem;
 
-  // Gentle slow idle rotation
-  useFrame((state, delta) => {
+  if (!brainData) {
+    return null;
+  }
+
+  return <BrainSceneContent brainData={brainData} />;
+}
+
+interface BrainSceneContentProps {
+  brainData: BrainGeometryData;
+}
+
+function BrainSceneContent({ brainData }: BrainSceneContentProps) {
+  const groupRef = useRef<THREE.Group>(null);
+  const pulseSystem = usePulseSystem(brainData);
+  const { triggerPulse, triggerPulseAt } = pulseSystem;
+  const viewport = useThree((state) => state.viewport);
+  const baseAngleX = 0;
+  const baseAngleY = -Math.PI / 2;
+  const frame = useMemo(() => {
+    return computeBrainWorldFrame(brainData.positions, viewport.width, viewport.height, baseAngleX, baseAngleY);
+  }, [brainData.positions, viewport.height, viewport.width]);
+
+  useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.02; // Slower rotation
-      groupRef.current.rotation.x = Math.sin(performance.now() * 0.0003) * 0.03;
+      groupRef.current.rotation.y = frame.angleY + Math.sin(state.clock.elapsedTime * 0.42) * 0.06;
+      groupRef.current.rotation.x = frame.angleX + Math.sin(state.clock.elapsedTime * 0.48) * 0.035;
     }
   });
 
@@ -38,28 +56,30 @@ export default function BrainScene({ deviceTier }: BrainSceneProps) {
   return (
     <>
       <ambientLight intensity={0.5} />
+      <mesh
+        position={[0, 0, -1]}
+        onPointerDown={(event) => {
+          event.stopPropagation();
+          triggerPulse();
+        }}
+      >
+        <planeGeometry args={[viewport.width * 2, viewport.height * 2]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
       
-      <group 
-        ref={groupRef} 
-        scale={[2.2, 2.2, 2.2]} 
-        position={[-0.12, -0.05, 0]} 
+      <group
+        ref={groupRef}
+        scale={[frame.scale * frame.xStretch, frame.scale * frame.yStretch, frame.scale]}
+        position={[frame.positionX, frame.positionY, frame.positionZ]}
       >
         <BrainParticles 
           brainData={brainData} 
-          activations={activations} 
+          pulseSystem={pulseSystem}
           onPointerDown={handlePointerDown}
-          needsUpdate={{
-            get current() { return needsPulseUpdate.current.needsUpdate; },
-            set current(v) { needsPulseUpdate.current.needsUpdate = v; }
-          }} 
         />
         <BrainConnections 
           brainData={brainData} 
-          activations={activations} 
-          needsUpdate={{
-            get current() { return needsPulseUpdate.current.needsUpdate; },
-            set current(v) { needsPulseUpdate.current.needsUpdate = v; }
-          }} 
+          pulseSystem={pulseSystem}
         />
       </group>
     </>

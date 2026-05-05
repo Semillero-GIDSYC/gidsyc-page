@@ -13,48 +13,48 @@ export const Home = ({ onNavClick }: HomeProps) => {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[760px] h-screen flex items-center justify-center overflow-hidden">
         <BrainBackground />
-        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-white/10 via-transparent to-white pointer-events-none"></div>
+        <div className="absolute inset-0 z-[2] bg-gradient-to-b from-white/5 via-transparent to-white/70 pointer-events-none"></div>
 
-        <div className="relative z-10 text-center px-4 max-w-4xl pointer-events-none">
+        <div className="relative z-10 -mt-16 text-center px-4 w-full max-w-6xl pointer-events-none">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
           >
-            <h1 className="text-8xl md:text-[10rem] font-display font-bold tracking-tighter text-gray-500 leading-none">
+            <h1 className="text-7xl md:text-[8.75rem] font-display font-bold tracking-tighter text-gray-500 leading-none">
               GIDSYC
             </h1>
-            <p className="text-xl md:text-3xl font-light text-gray-500 uppercase tracking-[0.4em] mt-4">
+            <p className="text-lg md:text-2xl font-light text-gray-500 uppercase tracking-[0.38em] mt-3">
               Semillero de Investigación
             </p>
             <p className="text-sm md:text-lg font-bold text-navy-700 mt-2 bg-navy-100/50 px-4 py-1 rounded-full border border-navy-200 backdrop-blur-sm inline-block">
               Grupo de Investigación y Desarrollo en Sistemas y Computación
             </p>
 
-            <div className="mt-16 flex flex-col md:flex-row items-stretch md:items-center justify-center gap-4 md:gap-6 pointer-events-auto max-w-6xl mx-auto px-4">
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 pointer-events-auto w-full max-w-5xl mx-auto px-4">
               <button
                 onClick={() => onNavClick('main', '#proyectos')}
-                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
+                className="w-full px-6 py-3.5 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-1.5 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
               >
                 Ver Proyectos
               </button>
               <button
                 onClick={() => onNavClick('estudiantes')}
-                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
+                className="w-full px-6 py-3.5 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-1.5 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
               >
                 Semilleristas
               </button>
               <button
                 onClick={() => onNavClick('main', '#equipo')}
-                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
+                className="w-full px-6 py-3.5 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-1.5 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
               >
                 Nuestro Equipo
               </button>
               <button
                 onClick={() => onNavClick('cursos')}
-                className="flex-1 md:flex-none md:w-60 px-8 py-4 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-2 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
+                className="w-full px-6 py-3.5 bg-[#475569] text-white text-base font-bold rounded-full shadow-xl shadow-navy-900/10 hover:-translate-y-1.5 hover:bg-[#334155] hover:shadow-2xl hover:shadow-navy-900/20 transition-all duration-300 text-center"
               >
                 Cursos
               </button>
@@ -63,8 +63,8 @@ export const Home = ({ onNavClick }: HomeProps) => {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 pointer-events-none opacity-50">
-          <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-4 text-center text-navy-900">Activa la red pulsando</p>
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 pointer-events-none opacity-45">
+          <p className="text-[10px] uppercase tracking-[0.3em] font-bold mb-2 text-center text-navy-900">Activa la red pulsando</p>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
@@ -212,9 +212,7 @@ export const Home = ({ onNavClick }: HomeProps) => {
 
       {/* Contact CTA */}
       <section className="py-20 bg-slate-50 overflow-hidden relative" id="contacto">
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-          <BrainBackground />
-        </div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(100,116,139,0.08),transparent_40%)] pointer-events-none"></div>
         <div className="relative z-10 max-w-6xl mx-auto px-4">
           <div className="bg-navy-900 rounded-[2.5rem] p-8 md:p-12 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] border border-white/5 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-burnt-red-500/10 to-transparent"></div>

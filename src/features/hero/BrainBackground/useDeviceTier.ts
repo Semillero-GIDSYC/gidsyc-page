@@ -25,7 +25,7 @@ function detectTier(): DeviceTier {
   if (!supportsWebGL) {
     return {
       tier: 'low',
-      particleCount: 300,
+      particleCount: 0,
       edgeK: 3,
       enableBloom: false,
       dpr: [1, 1],
@@ -57,7 +57,7 @@ function detectTier(): DeviceTier {
   if (isMobile || cores <= 2 || (isLowEndGPU && cores <= 4)) {
     return {
       tier: 'low',
-      particleCount: 500,
+      particleCount: 2000,
       edgeK: 3,
       enableBloom: false,
       dpr: [1, 1],
@@ -68,7 +68,7 @@ function detectTier(): DeviceTier {
   if (isTablet || cores <= 4 || isLowEndGPU) {
     return {
       tier: 'medium',
-      particleCount: 1000,
+      particleCount: 4000,
       edgeK: 4,
       enableBloom: false,
       dpr: [1, 1.5],
@@ -78,8 +78,8 @@ function detectTier(): DeviceTier {
 
   return {
     tier: 'high',
-    particleCount: 1600,
-    edgeK: 5,
+    particleCount: 7000,
+    edgeK: 3,
     enableBloom: true,
     dpr: [1, 2],
     supportsWebGL: true,

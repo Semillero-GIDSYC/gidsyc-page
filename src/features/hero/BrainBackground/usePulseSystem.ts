@@ -1,145 +1,81 @@
-import { useRef, useCallback } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
+import type { MutableRefObject } from 'react';
 import { useFrame } from '@react-three/fiber';
 import type { BrainGeometryData } from './useBrainGeometry';
+import {
+  PULSE_SLOT_COUNT,
+  createPulseScheduleData,
+  schedulePulse,
+  type PulseScheduleData,
+} from './brainPulseScheduler';
 
-interface PulseState {
-  activations: Float32Array;
+interface PulseSystemState {
+  nextSlot: number;
   lastPulseTime: number;
   nextPulseDelay: number;
-  needsUpdate: boolean;
+  version: number;
 }
 
-interface ActivePulse {
-  origin: number;
-  startTime: number;
-  maxDepth: number;
-  propagationSpeed: number;
-  depths: {idx: number, depth: number}[];
+export interface BrainPulseSystem {
+  schedule: PulseScheduleData;
+  versionRef: MutableRefObject<number>;
+  triggerPulse: (originIndex?: number) => void;
+  triggerPulseAt: (index: number) => void;
 }
 
-export function usePulseSystem(brainData: BrainGeometryData) {
-  const stateRef = useRef<PulseState>({
-    activations: new Float32Array(brainData.particleCount),
+export function usePulseSystem(brainData: BrainGeometryData): BrainPulseSystem {
+  const schedule = useMemo(() => {
+    return createPulseScheduleData(brainData.particleCount, brainData.edges.length);
+  }, [brainData.edges.length, brainData.particleCount]);
+
+  const stateRef = useRef<PulseSystemState>({
+    nextSlot: 0,
     lastPulseTime: 0,
-    nextPulseDelay: Math.random() * 4000 + 4000,
-    needsUpdate: false,
+    nextPulseDelay: Math.random() * 2 + 2.5,
+    version: 0,
   });
-
-  const activePulsesRef = useRef<ActivePulse[]>([]);
-  const cacheRef = useRef<Map<number, {idx: number, depth: number}[]>>(new Map());
-
-  const getPulseDepths = useCallback((origin: number) => {
-    if (cacheRef.current.has(origin)) return cacheRef.current.get(origin)!;
-
-    const { adjacency, particleCount } = brainData;
-    const depths = new Int8Array(particleCount).fill(-1);
-    const queue: [number, number][] = [[origin, 0]];
-    depths[origin] = 0;
-
-    const maxDepth = 8;
-    const result: {idx: number, depth: number}[] = [];
-
-    while (queue.length > 0) {
-      const [idx, d] = queue.shift()!;
-      result.push({idx, depth: d});
-
-      if (d < maxDepth) {
-        const neighbors = adjacency[idx];
-        for (let i = 0; i < neighbors.length; i++) {
-          const n = neighbors[i];
-          if (depths[n] === -1) {
-            depths[n] = d + 1;
-            queue.push([n, d + 1]);
-          }
-        }
-      }
-    }
-    
-    // Cap cache size
-    if (cacheRef.current.size > 100) cacheRef.current.clear();
-    cacheRef.current.set(origin, result);
-    return result;
-  }, [brainData]);
+  const versionRef = useRef(0);
+  const currentTimeRef = useRef(0);
 
   const triggerPulse = useCallback((originIndex?: number) => {
+    const state = stateRef.current;
     const origin = originIndex ?? Math.floor(Math.random() * brainData.particleCount);
-    
-    activePulsesRef.current.push({
+    const slot = state.nextSlot;
+
+    schedulePulse({
+      adjacency: brainData.adjacency,
+      edges: brainData.edges,
+      edgeIndexByPair: brainData.edgeIndexByPair,
+      particleCount: brainData.particleCount,
       origin,
-      startTime: performance.now(),
-      maxDepth: 8,
-      propagationSpeed: 16.0, // Slower, softer propagation (was 45)
-      depths: getPulseDepths(origin),
-    });
-    
-    stateRef.current.needsUpdate = true;
-  }, [brainData.particleCount, getPulseDepths]);
+      slot,
+      startTime: currentTimeRef.current,
+    }, schedule);
+
+    state.nextSlot = (slot + 1) % PULSE_SLOT_COUNT;
+    state.version++;
+    versionRef.current = state.version;
+  }, [brainData, schedule]);
 
   const triggerPulseAt = useCallback((index: number) => {
     triggerPulse(index);
   }, [triggerPulse]);
 
-  useFrame((_, delta) => {
-    const state = stateRef.current;
-    state.needsUpdate = false;
-    const now = performance.now();
+  useFrame((state) => {
+    const now = state.clock.elapsedTime;
+    const pulseState = stateRef.current;
+    currentTimeRef.current = now;
 
-    if (now - state.lastPulseTime > state.nextPulseDelay) {
+    if (now - pulseState.lastPulseTime > pulseState.nextPulseDelay) {
       triggerPulse();
-      state.lastPulseTime = now;
-      state.nextPulseDelay = Math.random() * 2000 + 1500; // Faster frequency (1.5s - 3.5s)
-    }
-
-    const { activations } = state;
-    const pulses = activePulsesRef.current;
-
-    if (pulses.length > 0) {
-      for (let pIdx = pulses.length - 1; pIdx >= 0; pIdx--) {
-        const p = pulses[pIdx];
-        const elapsed = (now - p.startTime) / 1000;
-        const currentReach = elapsed * p.propagationSpeed;
-
-        let pulseFinished = true;
-        for (let i = 0; i < p.depths.length; i++) {
-          const {idx, depth} = p.depths[i];
-          if (depth <= currentReach) {
-            const strength = 1.0 - (depth / p.maxDepth);
-            if (activations[idx] < strength) {
-              activations[idx] = strength;
-              state.needsUpdate = true;
-            }
-          } else {
-            pulseFinished = false;
-          }
-        }
-
-        if (pulseFinished || elapsed > 3.0) {
-          pulses.splice(pIdx, 1);
-        }
-      }
-    }
-
-    const decay = Math.pow(0.965, delta * 60); // Slower decay (was 0.94) to let pulse linger
-    let activeAny = false;
-
-    for (let i = 0; i < activations.length; i++) {
-      if (activations[i] > 0.01) {
-        activations[i] *= decay;
-        activeAny = true;
-      } else if (activations[i] > 0) {
-        activations[i] = 0;
-        state.needsUpdate = true;
-      }
-    }
-
-    if (activeAny) {
-      state.needsUpdate = true;
+      pulseState.lastPulseTime = now;
+      pulseState.nextPulseDelay = Math.random() * 2 + 2.5;
     }
   });
 
   return {
-    activations: stateRef.current.activations,
-    stateRef,
+    schedule,
+    versionRef,
     triggerPulse,
     triggerPulseAt,
   };
