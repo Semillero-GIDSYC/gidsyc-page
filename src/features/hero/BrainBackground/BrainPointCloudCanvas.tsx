@@ -24,7 +24,7 @@ interface BrainPointCloudCanvasProps {
   pointCount?: number;
 }
 
-export function BrainPointCloudCanvas({ pointCount = 2400 }: BrainPointCloudCanvasProps) {
+export function BrainPointCloudCanvas({ pointCount = 2700 }: BrainPointCloudCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const positionsRef = useRef<Float32Array | null>(null);
   const projectedRef = useRef<Float32Array | null>(null);
@@ -91,7 +91,7 @@ export function BrainPointCloudCanvas({ pointCount = 2400 }: BrainPointCloudCanv
 
       if (positions && edges && schedule) {
         const count = positions.length / 3;
-        const angle = -0.18 + Math.sin(time * 0.22) * 0.05;
+        const angle = -0.18 + Math.sin(time * 0.42) * 0.085;
         const frame = computeCanvasBrainFrame(positions, width, height, angle);
         const projected = projectedRef.current?.length === count * 2
           ? projectedRef.current
