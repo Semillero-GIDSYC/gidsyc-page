@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "build": "vite build",
+    "build": "npm run generate:scholar && vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "extract:brain": "tsx scripts/extract-brain-points.ts"
+    "extract:brain": "tsx scripts/extract-brain-points.ts",
+    "generate:scholar": "tsx scripts/generate-scholar-pages.ts"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

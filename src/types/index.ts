@@ -9,6 +9,7 @@ export interface TeamMember {
   role: string;
   field: string;
   url: string;
+  image?: string;
 }
 
 export interface Student {
@@ -28,7 +29,32 @@ export interface Course {
   audio: string;
 }
 
-export type ViewType = 'main' | 'estudiantes' | 'cursos';
+export interface ResearchPublication {
+  slug: string;
+  title: string;
+  authors: string[];
+  citation: string;
+  year: number;
+  abstract?: string;
+  doi?: string;
+  sourceUrl?: string;
+  pdfUrl?: string;
+  journalTitle?: string;
+  volume?: string;
+  issue?: string;
+  firstPage?: string;
+  lastPage?: string;
+  teamAuthors: string;
+  googleScholarUrl: string;
+}
+
+export interface ResearchLine {
+  id: string;
+  title: string;
+  publications: ResearchPublication[];
+}
+
+export type ViewType = 'main' | 'estudiantes' | 'cursos' | 'lineas';
 
 export interface NavLink {
   title: string;

@@ -1,4 +1,7 @@
 import { TeamMember } from '../types';
+import CARLOS_HENRIQUEZ_IMG from '/assets/team/carlos-henriquez.png';
+import JESUS_RIOS_IMG from '/assets/team/jesus-rios.jpeg';
+import NALLIG_LEAL_IMG from '/assets/team/nallig-leal.jpeg';
 
 export const TEAM_MEMBERS: TeamMember[] = [
   {
@@ -11,13 +14,15 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'PhD. Carlos Henríquez Miranda',
     role: 'Investigador',
     field: 'Investigador Senior',
-    url: 'https://scholar.google.com/citations?user=eSAme6cAAAAJ'
+    url: 'https://scholar.google.com/citations?user=eSAme6cAAAAJ',
+    image: CARLOS_HENRIQUEZ_IMG
   },
   {
     name: 'PhD. Nallig Leal Narvaez',
     role: 'Investigador',
     field: 'Investigador Senior',
-    url: 'https://scholar.google.com/citations?user=kL63KHQAAAAJ&hl=es'
+    url: 'https://scholar.google.com/citations?user=kL63KHQAAAAJ&hl=es',
+    image: NALLIG_LEAL_IMG
   },
   {
     name: 'PhD. Esmeide Leal',
@@ -29,6 +34,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     name: 'MSc. Jesús Ríos Pérez',
     role: 'Investigador',
     field: 'Investigador Senior',
-    url: 'https://scholar.google.com/citations?user=0Gv4kvgAAAAJ&hl=es'
+    url: 'https://scholar.google.com/citations?user=0Gv4kvgAAAAJ&hl=es',
+    image: JESUS_RIOS_IMG
   }
 ];

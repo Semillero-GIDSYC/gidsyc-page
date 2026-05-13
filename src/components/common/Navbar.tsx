@@ -35,7 +35,7 @@ export const Navbar = ({ activeView, isMenuOpen, setIsMenuOpen, onNavClick }: Na
         </div>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-5 lg:gap-8">
           {NAV_LINKS.map((link) => (
             <button
               key={link.title}

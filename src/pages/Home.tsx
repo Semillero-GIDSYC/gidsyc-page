@@ -1,12 +1,13 @@
 import { motion } from 'motion/react';
-import { Search, Users, BookOpen, ChevronRight, Phone, MapPin, Mail } from 'lucide-react';
+import { Search, Users, BookOpen, ChevronRight, Phone } from 'lucide-react';
 import { BrainBackground } from '../features/hero/BrainBackground/BrainBackground';
 import { PROJECTS } from '../data/projects';
+import { RESEARCH_LINES } from '../data/researchLines';
 import { TEAM_MEMBERS } from '../data/team';
 import FULL_LOGO from '/assets/horizontal.png';
 
 interface HomeProps {
-  onNavClick: (view: 'main' | 'estudiantes' | 'cursos', hash?: string) => void;
+  onNavClick: (view: 'main' | 'estudiantes' | 'cursos' | 'lineas', hash?: string) => void;
 }
 
 export const Home = ({ onNavClick }: HomeProps) => {
@@ -124,88 +125,100 @@ export const Home = ({ onNavClick }: HomeProps) => {
         </div>
       </section>
 
-      {/* Content Grids */}
+      {/* Projects */}
       <section className="py-24 px-4 md:px-6 bg-white text-gray-900" id="proyectos">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-          {/* Recent Projects Column */}
-          <div className="space-y-8 text-left">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-navy-900 rounded-2xl shadow-lg shadow-navy-900/20">
-                <Search className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold font-display uppercase tracking-tight text-navy-900">Proyectos Recientes</h3>
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-navy-900 rounded-2xl shadow-lg shadow-navy-900/20">
+              <Search className="text-white" size={24} />
             </div>
-            <div className="space-y-4">
-              {PROJECTS.map((proj) => (
-                <div key={proj.title} className="p-6 bg-slate-50/50 rounded-2xl border border-slate-100 card-hover group">
-                  <h4 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors leading-tight text-left">{proj.title}</h4>
-                  <p className="text-sm text-slate-500 mb-4 text-left leading-relaxed">{proj.desc}</p>
-                  <a
-                    href={proj.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex px-4 py-2 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl hover:border-navy-900 hover:bg-navy-900 hover:text-white transition-all items-center gap-2 shadow-sm"
-                  >
-                    Leer Más <ChevronRight size={14} />
-                  </a>
-                </div>
-              ))}
-            </div>
+            <h3 className="text-2xl md:text-4xl font-bold font-display uppercase tracking-tight text-navy-900">Proyectos Recientes</h3>
           </div>
 
-          {/* Team Members Column */}
-          <div className="space-y-8 text-left" id="equipo">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-burnt-red-500 rounded-lg shadow-lg shadow-burnt-red-500/20">
-                <Users className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold font-display uppercase tracking-tight text-navy-900">Equipo de Trabajo</h3>
-            </div>
-            <div className="space-y-6">
-              {TEAM_MEMBERS.map((member) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {PROJECTS.map((proj) => (
+              <div key={proj.title} className="p-6 bg-slate-50/50 rounded-2xl border border-slate-100 card-hover group text-left">
+                <h4 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors leading-tight text-left">{proj.title}</h4>
+                <p className="text-sm text-slate-500 mb-4 text-left leading-relaxed">{proj.desc}</p>
                 <a
-                  key={member.name}
-                  href={member.url}
+                  href={proj.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-4 group hover:bg-gray-50 p-2 rounded-2xl transition-all text-left"
+                  className="inline-flex px-4 py-2 bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-xl hover:border-navy-900 hover:bg-navy-900 hover:text-white transition-all items-center gap-2 shadow-sm"
                 >
-                  <div className="relative">
-                    <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-navy-900 group-hover:text-white transition-all shadow-md">
-                      <Users size={32} />
-                    </div>
-                  </div>
-                  <div className="text-left">
-                    <h4 className="font-bold text-lg text-navy-900">{member.name}</h4>
-                    <p className="text-sm font-semibold text-burnt-red-500 tracking-tight">{member.role}</p>
-                    <p className="text-xs text-gray-500">{member.field}</p>
-                  </div>
+                  Leer Más <ChevronRight size={14} />
                 </a>
-              ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Members */}
+      <section className="py-24 px-4 md:px-6 bg-slate-50 text-gray-900" id="equipo">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-burnt-red-500 rounded-lg shadow-lg shadow-burnt-red-500/20">
+              <Users className="text-white" size={24} />
             </div>
+            <h3 className="text-2xl md:text-4xl font-bold font-display uppercase tracking-tight text-navy-900">Equipo de Trabajo</h3>
           </div>
 
-          {/* Research Lines Column */}
-          <div className="space-y-8 text-left" id="lineas">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-navy-700 rounded-lg shadow-lg shadow-navy-700/20">
-                <BookOpen className="text-white" size={24} />
-              </div>
-              <h3 className="text-2xl font-bold font-display uppercase tracking-tight text-navy-900">Líneas de Investigación</h3>
-            </div>
-            <div className="space-y-3">
-              {[
-                'Modelos de razonamiento',
-                'Agentes inteligentes y sistemas autónomos de IA',
-                'IA eficiente, infraestructura computacional y sostenibilidad energética',
-                'IA aplicada a ciencia, ingeniería y datos complejos'
-              ].map((linea) => (
-                <div key={linea} className="p-4 bg-white border border-gray-100 rounded-xl hover:border-burnt-red-500 hover:translate-x-2 transition-all cursor-default flex items-center gap-3 group text-left">
-                  <div className="w-1.5 h-1.5 rounded-full bg-burnt-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <h4 className="font-bold text-sm text-gray-700 group-hover:text-navy-900 text-left">{linea}</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {TEAM_MEMBERS.map((member) => (
+              <a
+                key={member.name}
+                href={member.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 group bg-white hover:bg-gray-50 p-5 rounded-2xl border border-slate-100 transition-all text-left shadow-sm"
+              >
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-navy-900 group-hover:text-white transition-all shadow-md overflow-hidden">
+                    {member.image ? (
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Users size={32} />
+                    )}
+                  </div>
                 </div>
-              ))}
+                <div className="text-left">
+                  <h4 className="font-bold text-lg text-navy-900">{member.name}</h4>
+                  <p className="text-sm font-semibold text-burnt-red-500 tracking-tight">{member.role}</p>
+                  <p className="text-xs text-gray-500">{member.field}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Research Lines */}
+      <section className="py-24 px-4 md:px-6 bg-white text-gray-900" id="lineas">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-navy-700 rounded-lg shadow-lg shadow-navy-700/20">
+              <BookOpen className="text-white" size={24} />
             </div>
+            <h3 className="text-2xl md:text-4xl font-bold font-display uppercase tracking-tight text-navy-900">Líneas de Investigación</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {RESEARCH_LINES.map((linea) => (
+              <button
+                key={linea.id}
+                onClick={() => onNavClick('lineas', `#${linea.id}`)}
+                className="p-5 bg-white border border-gray-100 rounded-xl hover:border-burnt-red-500 hover:translate-x-2 transition-all cursor-pointer flex items-center gap-3 group text-left shadow-sm"
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-burnt-red-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <h4 className="font-bold text-sm md:text-base text-gray-700 group-hover:text-navy-900 text-left">{linea.title}</h4>
+                <ChevronRight size={16} className="ml-auto text-slate-300 group-hover:text-navy-900 transition-colors" />
+              </button>
+            ))}
           </div>
         </div>
       </section>

@@ -16,7 +16,7 @@ export const COURSES: Course[] = [
     url: 'https://github.com/sanchezgt/modelos_difusion_ia_generativa/tree/main',
     duration: '6 h 15 min',
     level: 'Avanzado',
-    lessons: '18 lecciones',
+    lessons: '12 lecciones',
     image: CURSO3_IMG,
     audio: CURSO3_AUDIO
   },
@@ -38,7 +38,7 @@ export const COURSES: Course[] = [
     url: 'https://github.com/sanchezgt/fundamentos-de-los-transformers',
     duration: '3 h 45 min',
     level: 'Intermedio',
-    lessons: '10 lecciones',
+    lessons: '16 lecciones',
     image: CURSO2_IMG,
     audio: CURSO2_AUDIO
   }

@@ -3,6 +3,7 @@ import { MainLayout } from './layouts/MainLayout';
 import { Home } from './pages/Home';
 import { StudentsPage } from './pages/StudentsPage';
 import { CoursesPage } from './pages/CoursesPage';
+import { ResearchLinesPage } from './pages/ResearchLinesPage';
 import { ViewType } from './types';
 
 export default function App() {
@@ -18,7 +19,7 @@ export default function App() {
       return;
     }
 
-    if (hash && view === 'main') {
+    if (hash) {
       setTimeout(() => {
         const el = document.querySelector(hash);
         if (el) {
@@ -37,6 +38,8 @@ export default function App() {
         return <StudentsPage />;
       case 'cursos':
         return <CoursesPage />;
+      case 'lineas':
+        return <ResearchLinesPage />;
       case 'main':
       default:
         return <Home onNavClick={handleNavClick} />;
